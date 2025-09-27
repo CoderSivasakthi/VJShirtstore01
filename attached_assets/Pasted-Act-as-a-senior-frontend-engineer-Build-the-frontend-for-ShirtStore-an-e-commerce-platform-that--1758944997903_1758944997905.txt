@@ -1,0 +1,91 @@
+Act as a senior frontend engineer. Build the frontend for “ShirtStore”, an e-commerce platform that sells only shirts. The design should look and feel like Flipkart, optimized for both web and mobile screens (responsive). Use Next.js (React + TypeScript) with Tailwind CSS for styling.
+
+Requirements:
+
+Core Pages
+
+Home Page: Banner, featured shirts, categories (color, pattern, size, material).
+
+Product Listing Page:
+
+Grid view (2 columns on mobile, 4 on desktop).
+
+Left sidebar (or top filter drawer on mobile) with faceted filters: color, pattern (plain/checked/printed), size, material, fit, sleeve, price range, brand, rating.
+
+Sorting options: relevance, price (low→high, high→low), newest.
+
+Pagination and infinite scroll support.
+
+Product Detail Page:
+
+Large product image gallery with zoom and thumbnails.
+
+Variant selection (color, size, material).
+
+Stock indicator, price with discount badge, add-to-cart, and buy now.
+
+Tabs for description, material details, reviews, return policy.
+
+Similar products carousel.
+
+Cart Page: List of items, update quantity, remove item, total price calculation.
+
+Checkout Page: Shipping address form, order summary, payment initiation (mock UI).
+
+User Pages: Login, Signup, Profile, Order History.
+
+Admin Pages (Frontend only): Add/Edit products, upload images, view orders.
+
+Components
+
+Header/Navbar: Sticky, with logo, search bar (autocomplete suggestions), cart icon (with item count), profile dropdown.
+
+Footer: Quick links, contact, policies.
+
+Filters/Chips: Color swatches, size buttons, material dropdowns, collapsible sidebar.
+
+Cards: Reusable product card with hover effects, discount % badge, and rating stars.
+
+Modals: Size guide, quick view, login/signup modal.
+
+State & Data
+
+Use React Query or SWR for API calls (mock APIs or connect to backend).
+
+Global state (cart, user) via Zustand or Context API.
+
+Show loading skeletons and error states.
+
+UI/UX
+
+Responsive, mobile-first design.
+
+Flipkart-like aesthetics: product grid spacing, sticky filters, bold CTAs.
+
+SEO friendly (Next.js SSR).
+
+Accessible (ARIA labels, keyboard navigation).
+
+Extras
+
+Dark/Light theme toggle.
+
+Wishlist (heart icon).
+
+Toast notifications (add to cart, login success, etc.).
+
+Code should follow clean folder structure: /components, /pages, /hooks, /utils, /contexts.
+
+Include sample seed data (50 shirts with variations) for UI testing.
+
+Deliverables:
+
+Complete Next.js frontend project with the above pages and components.
+
+TypeScript for type safety.
+
+Tailwind CSS with utility classes and reusable styles.
+
+Demo data + mocks for API integration.
+
+README with setup instructions.
