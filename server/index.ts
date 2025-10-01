@@ -1,15 +1,23 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import os from "os";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Fix __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// --- Logging middleware ---
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  const pathReq = req.path;
+  let capturedJsonResponse: Record<string, any> | undefined;
 
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
@@ -19,16 +27,10 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
+    if (pathReq.startsWith("/api")) {
+      let logLine = `${req.method} ${pathReq} ${res.statusCode} in ${duration}ms`;
+      if (capturedJsonResponse) logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
       log(logLine);
     }
   });
@@ -36,9 +38,22 @@ app.use((req, res, next) => {
   next();
 });
 
+// --- Helper: Get LAN IP ---
+function getLocalIP(): string {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name] || []) {
+      if (net.family === "IPv4" && !net.internal) return net.address;
+    }
+  }
+  return "127.0.0.1";
+}
+
+// --- Main async server startup ---
 (async () => {
   const server = await registerRoutes(app);
 
+  // --- Error handler ---
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -47,25 +62,22 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // --- Vite / Static setup ---
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const port = parseInt(process.env.PORT || "5000", 10);
+  const host = "0.0.0.0"; // allow network access
+  const localIP = getLocalIP();
+
+  server.listen(port, host, () => {
+    log(`✅ Server running locally:   http://localhost:${port}`);
+    log(`📱 Server on your network:  http://${localIP}:${port}`);
+    log("🔗 Connect your mobile to the same Wi-Fi and use the network URL above.");
   });
 })();
+
+export default app;
