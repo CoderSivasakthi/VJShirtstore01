@@ -163,35 +163,48 @@ export default function Products() {
         </div>
 
         {/* Products Grid */}
-        <div className="flex-1">
+        <div className="flex-1 margin-auto">
           {/* Sort & Filter Header */}
-          <div className="flex justify-between items-center mb-6 bg-card p-4 rounded-lg border border-border">
-            <div className="flex items-center space-x-4">
-              <h2 className="text-xl font-bold" data-testid="text-products-count">
-                Shirts ({products.length} items)
-              </h2>
-              <div className="lg:hidden">
-                <ProductFilters 
-                  filters={filters} 
-                  onFiltersChange={handleFiltersChange} 
-                />
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Select value={sortBy} onValueChange={handleSortChange}>
-                <SelectTrigger className="w-48" data-testid="select-sort">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="relevance">Sort by Relevance</SelectItem>
-                  <SelectItem value="price-low">Price: Low to High</SelectItem>
-                  <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="rating">Customer Rating</SelectItem>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          {/* <div className="flex justify-between items-center mb-6 bg-card p-4 rounded-lg border border-border"> */}
+      <div className="flex flex-col gap-4 m-auto bg-card py-2 px-4 rounded-lg border border-border sm:flex-row sm:items-center sm:justify-between ">
+  {/* Title */}
+  <h2
+    className="text-m font-bold flex w-full"
+    data-testid="text-products-count"
+  >
+    Shirts ({products.length} items)
+  </h2>
+
+  {/* Filters + Sort */}
+  <div className="flex justify-between items-center gap-2 w-full sm:w-full">
+    {/* Filters */}
+    <div className="lg:hidden sm:mt-2 m-auto">
+      <ProductFilters
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
+      />
+    </div>
+    <div className="flex items-center mb-4 sm:mb-2">
+    {/* SortBy */}
+    <Select value={sortBy} onValueChange={handleSortChange}>
+      <SelectTrigger
+        className="w-full sm:w-full lg:w-auto"
+        data-testid="select-sort"
+      >
+        <SelectValue placeholder="Sort by" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="relevance">Sort by Relevance</SelectItem>
+        <SelectItem value="price-low">Price: Low to High</SelectItem>
+        <SelectItem value="price-high">Price: High to Low</SelectItem>
+        <SelectItem value="rating">Customer Rating</SelectItem>
+        <SelectItem value="newest">Newest First</SelectItem>
+      </SelectContent>
+    </Select>
+    </div>
+  </div>
+</div>
+
 
           {/* Products Grid */}
           <ProductGrid products={products} isLoading={isLoading} />
